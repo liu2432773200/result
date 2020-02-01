@@ -11,8 +11,8 @@ import java.io.Serializable;
 /**
  * 平台通用返回结果
  * SUCCESS（200）看需求读取
- * BAD_REQUEST（400）读取message
- * INTERNAL_SERVER_ERROR（500）读取data
+ * BAD_REQUEST（4xx）读取message
+ * INTERNAL_SERVER_ERROR（5xx）读取data
  * @author lyh
  * @date 2020-01-19
  */
@@ -63,6 +63,7 @@ public class PlatformResult<T> implements Serializable {
      * @param <T>           返回数据的类型
      * @return
      */
+    @Deprecated
     public static<T> PlatformResult<T> success(ResultStatus resultStatus, T data) {
         if (resultStatus == null) {
             return success(data);
@@ -78,6 +79,16 @@ public class PlatformResult<T> implements Serializable {
      */
     public static<Void> PlatformResult<Void> failure() {
         return new PlatformResult<Void>(ResultStatus.INTERNAL_SERVER_ERROR, null);
+    }
+
+    /**
+     * 失败请求
+     * @param message   返回信息描述
+     * @param <Void>    返回的数据类型
+     * @return
+     */
+    public static<Void> PlatformResult<Void> failure(String message) {
+        return new PlatformResult<Void>(ResultStatus.INTERNAL_SERVER_ERROR.getCode(), message, null);
     }
 
     /**
@@ -105,16 +116,6 @@ public class PlatformResult<T> implements Serializable {
 
     /**
      * 失败请求
-     * @param message   返回信息描述
-     * @param <Void>    返回的数据类型
-     * @return
-     */
-    public static<Void> PlatformResult<Void> failure(String message) {
-        return new PlatformResult<Void>(ResultStatus.INTERNAL_SERVER_ERROR.getCode(), message, null);
-    }
-
-    /**
-     * 失败请求
      * @param code      返回状态码
      * @param message   返回信息描述
      * @param data      返回的数据
@@ -126,23 +127,21 @@ public class PlatformResult<T> implements Serializable {
     }
 
     /**
-     * 封装ResultCode下的数据
-     * @param code  状态常量
-     * @param data  返回的数据
+     * 封装ResultCode下的数据并私有化构造防止外部调用
+     * @param resultStatus  状态常量
+     * @param data          返回的数据
      */
-    private PlatformResult(ResultStatus code, T data) {
-        this.code = code.getCode();
-        this.message = code.getMessage();
-        this.data = data;
+    private PlatformResult(ResultStatus resultStatus, T data) {
+        this(resultStatus.getCode(), resultStatus.getMessage(), data);
     }
 
     /**
-     *
-     * @param code
-     * @param message
-     * @param data
+     * 封装返回的数据并私有化构造防止外部调用
+     * @param code      状态码
+     * @param message   信息描述
+     * @param data      数据
      */
-    private PlatformResult(Integer code,String message, T data) {
+    private PlatformResult(Integer code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
