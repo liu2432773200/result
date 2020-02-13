@@ -6,7 +6,7 @@
 
     <groupId>com.liu</groupId>
     <artifactId>result</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <description>平台通用返回格式</description>
 
     <properties>
