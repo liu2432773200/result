@@ -77,12 +77,9 @@ public enum ResultStatus {
      */
     private String description;
 
-    ResultStatus(Integer code, String message){
+    ResultStatus(Integer code, String message, String description){
         this.code = code;
         this.message = message;
-    }
-    ResultStatus(Integer code, String message, String description){
-        this(code, message);
         this.description = description;
     }
 }
