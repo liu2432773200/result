@@ -10,18 +10,15 @@ import java.io.Serializable;
 
 /**
  * 平台通用返回结果
- * SUCCESS（200）看需求读取
- * BAD_REQUEST（4xx）读取message
- * INTERNAL_SERVER_ERROR（5xx）读取data
+ *
  * @author lyh
- * @date 2020-01-19
  */
 @Getter
 @ToString
 @EqualsAndHashCode
 // 若被注解的字段值为 null，则序列化时忽略该字段。
-// @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+// @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class PlatformResult<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
@@ -54,21 +51,6 @@ public class PlatformResult<T> implements Serializable {
      */
     public static<T> PlatformResult<T> success(T data) {
         return new PlatformResult<T>(ResultStatus.SUCCESS, data);
-    }
-
-    /**
-     * 成功请求自定义状态和返回数据
-     * @param resultStatus  返回状态
-     * @param data          返回的数据
-     * @param <T>           返回数据的类型
-     * @return
-     */
-    @Deprecated
-    public static<T> PlatformResult<T> success(ResultStatus resultStatus, T data) {
-        if (resultStatus == null) {
-            return success(data);
-        }
-        return new PlatformResult<T>(resultStatus, data);
     }
 
 
@@ -127,21 +109,21 @@ public class PlatformResult<T> implements Serializable {
     }
 
     /**
-     * 封装ResultCode下的数据并私有化构造防止外部调用
+     * 封装ResultCode下的数据
      * @param resultStatus  状态常量
      * @param data          返回的数据
      */
-    private PlatformResult(ResultStatus resultStatus, T data) {
+    protected PlatformResult(ResultStatus resultStatus, T data) {
         this(resultStatus.getCode(), resultStatus.getMessage(), data);
     }
 
     /**
-     * 封装返回的数据并私有化构造防止外部调用
+     * 封装返回的数据
      * @param code      状态码
      * @param message   信息描述
      * @param data      数据
      */
-    private PlatformResult(Integer code, String message, T data) {
+    protected PlatformResult(Integer code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
