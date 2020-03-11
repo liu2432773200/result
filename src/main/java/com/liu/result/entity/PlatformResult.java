@@ -33,6 +33,10 @@ public class PlatformResult<T> implements Serializable {
      * 返回数据
      */
     private T data;
+    /**
+     * 返回时间（时间戳）
+     */
+    private Long timestamp;
 
     /**
      * 成功请求 无返回数据
@@ -71,6 +75,17 @@ public class PlatformResult<T> implements Serializable {
      */
     public static<Void> PlatformResult<Void> failure(String message) {
         return new PlatformResult<Void>(ResultStatus.INTERNAL_SERVER_ERROR.getCode(), message, null);
+    }
+
+    /**
+     * 失败请求
+     * @param code      返回状态码
+     * @param message   返回信息描述
+     * @param <Void>    返回的数据类型
+     * @return
+     */
+    public static<Void> PlatformResult<Void> failure(Integer code, String message) {
+        return new PlatformResult<Void>(code, message, null);
     }
 
     /**
@@ -127,6 +142,8 @@ public class PlatformResult<T> implements Serializable {
         this.code = code;
         this.message = message;
         this.data = data;
+
+        timestamp = System.currentTimeMillis();
     }
 }
 
